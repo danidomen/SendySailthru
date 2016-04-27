@@ -1,7 +1,4 @@
 <?php
-
-namespace SendyPHP;
-
 /**
  * Sendy Class
  */
@@ -19,15 +16,15 @@ class SendyPHP
         $api_key = @$config['api_key'];
         
         if (empty($list_id)) {
-            throw new \Exception("Required config parameter [list_id] is not set or empty", 1);
+            throw new Exception("Required config parameter [list_id] is not set or empty", 1);
         }
         
         if (empty($installation_url)) {
-            throw new \Exception("Required config parameter [installation_url] is not set or empty", 1);
+            throw new Exception("Required config parameter [installation_url] is not set or empty", 1);
         }
         
         if (empty($api_key)) {
-            throw new \Exception("Required config parameter [api_key] is not set or empty", 1);
+            throw new Exception("Required config parameter [api_key] is not set or empty", 1);
         }
 
         $this->list_id = $list_id;
@@ -38,7 +35,7 @@ class SendyPHP
     public function setListId($list_id)
     {
         if (empty($list_id)) {
-            throw new \Exception("Required config parameter [list_id] is not set", 1);
+            throw new Exception("Required config parameter [list_id] is not set", 1);
         }
 
         $this->list_id = $list_id;
@@ -151,7 +148,7 @@ class SendyPHP
 
         //handle exceptions
         if (empty($list)) {
-            throw new \Exception("method [subcount] requires parameter [list] or [$this->list_id] to be set.", 1);
+            throw new Exception("method [subcount] requires parameter [list] or [$this->list_id] to be set.", 1);
         }
 
 
@@ -174,6 +171,43 @@ class SendyPHP
             'status' => false,
             'message' => $result
         );
+    }
+    
+    /**
+     * Method to extract all data from list
+     * @param type $list
+     * @param type $method 1 Only Confirmed, 2 Only Unsubscribed, 3 Only Bounced, 4 Only Complaint, 5 All
+     * @return list or error
+     * @throws Exception
+     */
+    public function sublist($list = "",$method=1)
+    {
+        $type = 'api/subscribers/get_subscribers_in_list.php';
+
+        //if a list is passed in use it, otherwise use $this->list_id
+        if (empty($list)) {
+            $list = $this->list_id;
+        }
+
+        //handle exceptions
+        if (empty($list)) {
+            throw new Exception("method [sublist] requires parameter [list] or [$this->list_id] to be set.", 1);
+        }
+
+
+        //Send request for subcount
+        $result = $this->buildAndSend($type, array(
+            'api_key' => $this->api_key,
+            'list_id' => $list,
+            'method' => $method
+        ));
+
+        //Handle the results
+        return array(
+            'status' => true,
+            'message' => $result
+        );
+
     }
 
     public function createCampaign(array $values)
@@ -214,11 +248,11 @@ class SendyPHP
     {
         //error checking
         if (empty($type)) {
-            throw new \Exception("Required config parameter [type] is not set or empty", 1);
+            throw new Exception("Required config parameter [type] is not set or empty", 1);
         }
 
         if (empty($values)) {
-            throw new \Exception("Required config parameter [values] is not set or empty", 1);
+            throw new Exception("Required config parameter [values] is not set or empty", 1);
         }
 
         //Global options for return
