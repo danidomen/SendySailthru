@@ -15,6 +15,10 @@ class SendyPHP
         $installation_url = @$config['installation_url'];
         $api_key = @$config['api_key'];
         
+        if(!$this->_is_curl_installed()){
+            exit('Your server not have CURL, please ask your provider to install or enable it');
+        }
+        
         if (empty($list_id)) {
             throw new Exception("Required config parameter [list_id] is not set or empty", 1);
         }
@@ -270,11 +274,12 @@ class SendyPHP
         $ch = curl_init($this->installation_url .'/'. $type);
 
         // Settings to disable SSL verification for testing (leave commented for production use)
-        // curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-        // curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/x-www-form-urlencoded"));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows NT 6.1; rv:19.0) Gecko/20100101 Firefox/19.0");
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
@@ -282,5 +287,14 @@ class SendyPHP
         curl_close($ch);
 
         return $result;
+    }
+    
+    function _is_curl_installed() {
+        if  (in_array  ('curl', get_loaded_extensions())) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 }

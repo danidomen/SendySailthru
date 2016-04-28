@@ -30,7 +30,7 @@ function whitelistIPs(){
     $whitelist = array(
         '127.0.0.1',
         '::1',
-        '88.198.19.132',
+        '88.198.19.100',
     );
     if(in_array($_SERVER['REMOTE_ADDR'], $whitelist)){
         return true;

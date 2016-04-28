@@ -1,5 +1,4 @@
 <?php
-include_once dirname(__FILE__) . '/../config.php';
 
 class SailthruManager{
     
@@ -28,8 +27,9 @@ class SailthruManager{
                 $result = $this->emailObserver($subs['email'], $sendy_status, array($this->sailthru_list => 1), (int)$subs['confirmed']);
                 $processed++;
             }
+			echo 'Emails Processed: '.$processed;
         }else{
-            echo 'No sendy subscribers found. Please check that all credentials and IPs are seted correctly on config.php <br/>';
+            echo 'No sendy subscribers found. Please check that all credentials and IPs are seted correctly on config.php <br/> '.((isset($sendy_list['message']) && !empty($sendy_list['message']))?'Real Error: '.$sendy_list['message']:'');
         }
     }
     

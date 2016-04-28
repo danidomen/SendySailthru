@@ -93,6 +93,9 @@
                 $jsonData[] = $array;
             } 
 	}
+		if(empty($jsonData)){
+			$jsonData['error'] = $q;
+		}
         echo json_encode($jsonData);  
 	//-----------------------------------------------------------//
         
