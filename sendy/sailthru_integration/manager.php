@@ -34,6 +34,37 @@ class SailthruManager{
     }
     
     /**
+     * Method to sync a Sailthru list to a Sendy list. The values can be setted on config.php
+     */
+    function sailthru2sendyList(){
+        $sailthru_emails = $this->sailthru->processExportListJob($this->sailthru_list,false,$this->sendy_config['installation_url'].'/sailthru_integration/scripts/callback_sailthrujob.php');
+        echo '<pre>'; var_dump($sailthru_emails); echo '</pre>';
+    }
+    
+    function getSailthruUsersFromJob($content_url){
+        $data = file_get_contents($content_url);
+        
+        $Data = array_map("str_getcsv", preg_split('/\r*\n+|\r+/', $data));
+        $header = true;
+        foreach ($Data as &$Row){
+            if ($header) {
+                $header = false;
+            } else {
+                //$Row = str_getcsv($Row, ','); //parse the items in rows
+                $sailthru_user = $this->sailthru->getUserBySid($Row[0]);
+                
+                if(isset($sailthru_user['keys']['email'])){
+                    $this->sendy->subscribe(array(
+                        'email' => $sailthru_user['keys']['email'], //this is the only field required by sendy
+                    ));
+                    file_put_contents('status.txt', 'Processed SID '.$Row[0].PHP_EOL,FILE_APPEND);
+                }
+
+            }
+        }
+    }
+    
+    /**
      * Method to sync a Sendy email to Sailthru email
      * @param type $email
      * @param type $status
