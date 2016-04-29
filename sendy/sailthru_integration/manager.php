@@ -54,10 +54,15 @@ class SailthruManager{
                 $sailthru_user = $this->sailthru->getUserBySid($Row[0]);
                 
                 if(isset($sailthru_user['keys']['email'])){
-                    $this->sendy->subscribe(array(
-                        'email' => $sailthru_user['keys']['email'], //this is the only field required by sendy
-                    ));
-                    file_put_contents('status.txt', 'Processed SID '.$Row[0].PHP_EOL,FILE_APPEND);
+                    if(isset($sailthru_user['optout_email']) && !empty($sailthru_user['optout_email']) && $sailthru_user['optout_email'] != 'none'){
+                        $this->sendy->unsubscribe($sailthru_user['keys']['email']);
+                    }else{
+                        $this->sendy->subscribe(array(
+                            'email' => $sailthru_user['keys']['email'], //this is the only field required by sendy
+                        ));
+                    }
+                    
+                    
                 }
 
             }
