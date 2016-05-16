@@ -24,7 +24,11 @@ for($i=0;$i<count($line_array);$i++)
 	$q = 'UPDATE subscribers SET unsubscribed = 1 WHERE email = "'.trim($line_array[$i]).'" AND list = '.$listID.' AND userID = '.$userID;
 	$r = mysqli_query($mysqli, $q);
 	if ($r){
-            $SailthuManager->emailObserver(trim($line_array[$i]),'unsubscribed');
+            $sailthruConfig = new ConfigClass();
+            $SailthuManager = $sailthruConfig->loadManagerBySendyList($map_config, short($listID));
+            if($SailthuManager){
+                $SailthuManager->emailObserver(trim($line_array[$i]),'unsubscribed');
+            }
         }
 }
 

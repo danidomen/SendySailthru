@@ -79,7 +79,7 @@
 			$r = mysqli_query($mysqli, $q);
 			if ($r)
 			{
-                                $SailthuManager->emailObserver($problem_email,'bounce_soft');
+                                $statusSailthru = 'bounce_soft';
 				//check if recipient has soft bounced 3 times
 				if($bounceType == 'Transient')
 				{
@@ -98,11 +98,13 @@
 						    $q = 'UPDATE subscribers SET bounced = 1, timestamp = '.$time.' WHERE email = "'.$problem_email.'"';
 						    $r = mysqli_query($mysqli, $q);
 						    if($r){
-                                                        $SailthuManager->emailObserver($problem_email,'bounced');
+                                                        $statusSailthru = 'bounced';
                                                     }
 					    }
 					}
 				}
+                                $sailthruConfig = new ConfigClass();
+                                $sailthruConfig->onAllListObserver($map_config,$mysqli, $problem_email,$statusSailthru);
 			}
 		}
 	}

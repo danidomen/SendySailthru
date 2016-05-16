@@ -12,16 +12,31 @@ $cronjobtoken = 'ABCDEFG123456789';
 $sendy_config = array(
     'api_key' => 'yousendyapikey', //your API key is available in Settings
     'installation_url' => 'http://yousendy.com',  //Your Sendy installation
-    'list_id' => 'yoursendylistidtobesynced' //Example: qrgJGmS8892ipLs8gUQ2MzLw
 );
 
 /**
- * SAILTHRU CONFIG
+ * MULTIMAP CONFIGURATION
  */
-$sailthru_api_key = "yoursailthruapikey"; //Your Sailthru Api Key
-$sailthru_api_secret = "yoursailthruapisecret"; //Your Sailthru Api Secret
-$sailthru_list = 'TEST_SENDY_SYNC'; //Name of Sailthru list to sync with sendy emails
+$map_config[] = array(
+    'sendy_api_key' => $sendy_config['api_key'], 
+    'sendy_installation_url' => $sendy_config['installation_url'],
+    'sendy_list_id' => 'yoursendylistidtobesynced', //Example: qrgJGmS8892ipLs8gUQ2MzLw
+    'sailthru_api_key' => "yoursailthruapikey", //Your Sailthru Api Key
+    'sailthru_api_secret' => "yoursailthruapisecret", //Your Sailthru Api Secret
+    'sailthru_list_name' => 'TEST_SENDY_SYNC' //Name of Sailthru list to sync with sendy emails
+);
 
+// To add another list config, you only need to copy the code below out of the comments and fill with your data
+/*
+$map_config[] = array(
+    'sendy_api_key' => $sendy_config['api_key'], 
+    'sendy_installation_url' => $sendy_config['installation_url'],
+    'sendy_list_id' => 'yoursendylistidtobesynced', //Example: qrgJGmS8892ipLs8gUQ2MzLw
+    'sailthru_api_key' => "yoursailthruapikey", //Your Sailthru Api Key
+    'sailthru_api_secret' => "yoursailthruapisecret", //Your Sailthru Api Secret
+    'sailthru_list_name' => 'TEST_SENDY_SYNC' //Name of Sailthru list to sync with sendy emails
+);
+*/
 
 /**
  * FUNCTION ALLOWED IPS 
@@ -37,11 +52,5 @@ function whitelistIPs(){
     }
     return false;
 }
-
-
-$sailthru = new Sailthru_Client($sailthru_api_key, $sailthru_api_secret);
-$sendy = new SendyPHP($sendy_config);
-
-$SailthuManager = new SailthruManager($sendy_config, $sendy, $sailthru, $sailthru_list);
 
 

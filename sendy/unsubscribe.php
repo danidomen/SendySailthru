@@ -2,7 +2,7 @@
 	ini_set('display_errors', 0);
 	include('includes/config.php');
 	include('includes/helpers/locale.php');
-        include_once dirname(__FILE__) . '/sailthru_integration/config.php';
+        
 	//--------------------------------------------------------------//
 	function dbConnect() { //Connect to database
 	//--------------------------------------------------------------//
@@ -38,7 +38,7 @@
 ?>
 <?php
 	include_once('includes/helpers/short.php');
-	
+	include_once dirname(__FILE__) . '/sailthru_integration/config.php';
 	//vars
 	$time = time();	
 	$feedback = '';
@@ -188,7 +188,22 @@
 		$r = mysqli_query($mysqli, $q);
 		if ($r){
 			$feedback = _('You\'re unsubscribed.');
-                        $SailthuManager->emailObserver($email,'unsubscribed');
+                        
+                        $sailthruConfig = new ConfigClass();
+                        if($unsubscribe_all_list){
+                            $lists_ids = explode(',', $all_lists);
+                            foreach($lists_ids as $idlist){
+                                $SailthuManager = $sailthruConfig->loadManagerBySendyList($map_config, short($idlist));
+                                if($SailthuManager){
+                                    $SailthuManager->emailObserver($email,'unsubscribed');
+                                }
+                            }
+                        }else{
+                            $SailthuManager = $sailthruConfig->loadManagerBySendyList($map_config, short($list_id));
+                            if($SailthuManager){
+                                $SailthuManager->emailObserver($email,'unsubscribed');
+                            }
+                        }
 		}
 		
 		//get AWS creds

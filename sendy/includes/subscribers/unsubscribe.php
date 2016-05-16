@@ -22,7 +22,14 @@ include_once dirname(__FILE__) . '/../../sailthru_integration/config.php';
 		{
                     $row1 = mysqli_fetch_array($r1);
                     if(isset($row1['email'])){
-                        $SailthuManager->emailObserver($row1['email'],'unsubscribed');
+                        $sailthruConfig = new ConfigClass();
+                        switch($action){
+                            case 'unsubscribe': $status = 'unsubscribed'; break;
+                            case 'resubscribe': $status = 'resubscribe'; break;
+                            case 'confirm': $status = 'confirm'; break;
+                                
+                        }
+                        $sailthruConfig->onAllListObserver($map_config,$mysqli, $row1['email'],$status);
                     }
                 }
 		echo true; 

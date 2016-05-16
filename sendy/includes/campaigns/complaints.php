@@ -71,25 +71,9 @@
 				}
 			}
 			
-			//Get app ID of this complaint email
-			$q = 'SELECT lists.app FROM lists, subscribers WHERE subscribers.messageID = "'.mysqli_real_escape_string($mysqli, $messageId).'" AND subscribers.list = lists.id';
-			$r = mysqli_query($mysqli, $q);
-			if ($r && mysqli_num_rows($r) > 0) while($row = mysqli_fetch_array($r)) $app = $row['app'];
+                        $sailthruConfig = new ConfigClass();
+                        $sailthruConfig->onAllListObserver($map_config,$mysqli, $problem_email,'complaint');
 			
-			//get comma separated lists belonging to this app
-			$q = 'SELECT id FROM lists WHERE app = '.$app;
-			$r = mysqli_query($mysqli, $q);
-			if ($r)
-			{
-				$all_lists = '';
-			    while($row = mysqli_fetch_array($r)) $all_lists .= $row['id'].',';
-			    $all_lists = substr($all_lists, 0, -1);
-			}
-			
-			//Mark as spam in ALL lists in the brand for this email
-			$q = 'UPDATE subscribers SET unsubscribed = 0, bounced = 0, complaint = 1, timestamp = '.$time.' WHERE email = "'.$problem_email.'" AND list IN ('.$all_lists.')';
-			mysqli_query($mysqli, $q);
-                        $SailthuManager->emailObserver($problem_email,'complaint');
 		}
 	}
 	

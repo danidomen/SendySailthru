@@ -77,7 +77,7 @@ class SailthruManager{
      * @param type $confirmed
      * @return type
      */
-    function emailObserver($email,$status,$to_sailthru_list = array(),$confirmed = 1){
+    function emailObserver($email,$status,$to_sailthru_list = array(),$confirmed = 1,$extended_vars = false){
         $optout = 'none';
         switch($status){
             case 'unsubscribed': $optout = 'basic'; break;
@@ -86,7 +86,11 @@ class SailthruManager{
             case 'complaint': $optout = 'all'; break;
             default: $optout = 'none'; break;
         }
-        $result = $this->sailthru->setEmail($email, array('sendy_status'=>$status), $to_sailthru_list,array(),(int)$confirmed,$optout);
+        $vars = array('sendy_status'=>$status);
+        if($extended_vars && is_array($extended_vars)){
+            $vars = array_merge($vars,$extended_vars);
+        }
+        $result = $this->sailthru->setEmail($email, $vars, $to_sailthru_list,array(),(int)$confirmed,$optout);
         return $result;
     }
     
