@@ -56,7 +56,6 @@ class SendyPHP
 
         //Send the subscribe
         $result = strval($this->buildAndSend($type, $values));
-
         //Handle results
         switch ($result) {
             case '1':
@@ -283,7 +282,13 @@ class SendyPHP
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT ,10); 
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
         $result = curl_exec($ch);
+        if(curl_error($ch))
+        {
+            trigger_error('error:' . curl_error($ch),E_USER_NOTICE);
+        }
         curl_close($ch);
 
         return $result;

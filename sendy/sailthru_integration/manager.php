@@ -55,6 +55,9 @@ class SailthruManager{
                 
                 if(isset($sailthru_user['keys']['email'])){
                     if(isset($sailthru_user['optout_email']) && !empty($sailthru_user['optout_email']) && $sailthru_user['optout_email'] != 'none'){
+                        $this->sendy->subscribe(array(
+                            'email' => $sailthru_user['keys']['email'], //this is the only field required by sendy
+                        ));
                         $this->sendy->unsubscribe($sailthru_user['keys']['email']);
                     }else{
                         $this->sendy->subscribe(array(
